@@ -16,7 +16,7 @@ export default function useGetApi(api, queryString = {}) {
         async function getData() {
             try {
                 setIsFetching(true);
-                await new Promise((resolve) => setTimeout(resolve, 4000));
+                // await new Promise((resolve) => setTimeout(resolve, 4000));
                 const response = await axios({
                     url: API.endpoint + api,
                     params: {

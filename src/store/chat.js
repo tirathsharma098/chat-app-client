@@ -5,6 +5,7 @@ const initial = {
     chatName: null,
     chatCreatedAt: null,
     chatLoading: false,
+    messages: [],
 };
 
 const chatSlice = createSlice({
@@ -15,6 +16,9 @@ const chatSlice = createSlice({
           // console.log(">> set State : ", JSON.parse(JSON.stringify(state)), action.payload)
             return { ...state, ...action.payload };
         },
+        newMessage(state, action){
+          state.messages.push(action.payload)
+        }
     },
 });
 

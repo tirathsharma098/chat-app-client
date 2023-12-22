@@ -24,14 +24,12 @@ export default function ChatSidebar() {
         (async () => {
             try {
                 dispatch(chatActions.set({ chatLoading: true }));
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                const response = await axios.post(
-                    API.endpoint + `/chat/create-new-chat/${userChatSelected}`,
-                    {},
-                    {
-                        ...getApiHeader,
-                    }
-                );
+                await new Promise((resolve) => setTimeout(resolve, 500));
+                const response = await axios({
+                    url:
+                        API.endpoint + `/chat/all-messages/${userChatSelected}`,
+                    ...getApiHeader,
+                });
                 if (response.data?.success === true)
                     dispatch(
                         chatActions.set({
@@ -39,6 +37,7 @@ export default function ChatSidebar() {
                             chatName: response.data.data.chat_name,
                             chatCreatedAt: response.data.data.created_at,
                             chatLoading: false,
+                            messages: response.data.data.messages,
                         })
                     );
                 dispatch(chatActions.set({ chatLoading: false }));

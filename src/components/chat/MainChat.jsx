@@ -1,44 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import Style from "./MainChat.module.css";
-import { MESSAGES_TYPES } from "../../utils/constants";
+import { toast } from "react-toastify";
+import { toastOptions } from "../../utils/responseHandler";
+import axios from "axios";
+import { API } from "../../config/api/api.config";
+import { getApiHeader } from "../../config/headers/get-api-header";
+import { useDispatch } from "react-redux";
+import { chatActions } from "../../store/chat";
 
-export default function MainChat({ socket }) {
+export default function MainChat({ socket, chatState }) {
     const [currentMessage, setCurrentMessage] = useState("");
-    const [allMessages, setAllMessages] = useState([
-        { type: MESSAGES_TYPES.ME, message: "hi" },
-        { type: MESSAGES_TYPES.OTHER, message: "by" },
-    ]);
+    const dispatch = useDispatch();
     useEffect(() => {
-        socket.on("t_c", (allUser) => {
-            console.log(">>> TOTAL CONNECTION GOT : ", allUser);
-            setAllMessages((prevM) => [
-                ...prevM,
-                {
-                    type: MESSAGES_TYPES.TOTAL_USER,
-                    message: `${allUser.a_u} Users connected`,
-                },
-            ]);
+        socket.emit("join_chat", chatState.currentChat);
+        socket.on("chat_connected", (id_got) => {
+            console.log(">> Chat connected : ", id_got);
         });
-        socket.on("b_m", (m) => {
-            setAllMessages((prevM) => [...prevM, m]);
+        socket.on("private_message_received", (m) => {
+            dispatch(chatActions.newMessage(m));
         });
     }, []);
 
-    const currentMessageHandler = (e) => {
+    const currentMessageHandler = async (e) => {
         if (e.key !== "Enter") return;
         // console.log(currentMessage);
-        socket.emit("b_m", {
-            type: MESSAGES_TYPES.OTHER,
-            message: currentMessage,
-        });
-        setAllMessages((prevM) => [
-            ...prevM,
-            {
-                type: MESSAGES_TYPES.ME,
-                message: currentMessage,
-            },
-        ]);
+        try {
+            const response = await axios.post(
+                API.endpoint + `/chat/send-message/${chatState.currentChat}`,
+                { content: currentMessage },
+                {
+                    ...getApiHeader,
+                }
+            );
+            const message = {
+                id: response.data.data.id,
+                content: currentMessage,
+                readbyMessage: [],
+                messageSender: {
+                    id: localStorage.getItem("user_id"),
+                },
+            };
+            socket.emit("private_message", message, chatState.currentChat);
+            dispatch(chatActions.newMessage(message));
+        } catch (err) {
+            console.log("error occc", err);
+            toast.error("Something went wrong", toastOptions);
+        }
+        // socket.emit("b_m", {
+        //     type: MESSAGES_TYPES.OTHER,
+        //     message: currentMessage,
+        // });
         setCurrentMessage("");
     };
 
@@ -49,10 +61,12 @@ export default function MainChat({ socket }) {
                     <div className={Style["messages-absolute-container"]}>
                         <div className="d-flex flex-column-reverse">
                             {/*----------------- MESSAGE START ---------------------- */}
-                            {allMessages.map((currentMessage, key) => {
+                            {chatState.messages.map((currentMessage, key) => {
                                 if (
-                                    allMessages[allMessages.length - 1 - key]
-                                        .type === MESSAGES_TYPES.ME
+                                    chatState.messages[
+                                        chatState.messages.length - 1 - key
+                                    ].messageSender.id ===
+                                    localStorage.getItem("user_id")
                                 )
                                     return (
                                         <div
@@ -69,19 +83,22 @@ export default function MainChat({ socket }) {
                                                     className={`${Style["chat-box-me"]}`}
                                                 >
                                                     {
-                                                        allMessages[
-                                                            allMessages.length -
+                                                        chatState.messages[
+                                                            chatState.messages
+                                                                .length -
                                                                 1 -
                                                                 key
-                                                        ].message
+                                                        ].content
                                                     }
                                                 </div>
                                             </div>
                                         </div>
                                     );
                                 else if (
-                                    allMessages[allMessages.length - 1 - key]
-                                        .type === MESSAGES_TYPES.OTHER
+                                    chatState.messages[
+                                        chatState.messages.length - 1 - key
+                                    ].messageSender.id !==
+                                    localStorage.getItem("user_id")
                                 )
                                     return (
                                         <div
@@ -98,40 +115,41 @@ export default function MainChat({ socket }) {
                                                     className={`${Style["chat-box-receiver"]}`}
                                                 >
                                                     {
-                                                        allMessages[
-                                                            allMessages.length -
+                                                        chatState.messages[
+                                                            chatState.messages
+                                                                .length -
                                                                 1 -
                                                                 key
-                                                        ].message
+                                                        ].content
                                                     }
                                                 </div>
                                             </div>
                                         </div>
                                     );
-                                else if (
-                                    allMessages[allMessages.length - 1 - key]
-                                        .type === MESSAGES_TYPES.TOTAL_USER
-                                )
-                                    return (
-                                        <div
-                                            className={`align-self-center mb-3`}
-                                            key={key}
-                                        >
-                                            <div
-                                                style={{
-                                                    position: "relative",
-                                                }}
-                                            >
-                                                {
-                                                    allMessages[
-                                                        allMessages.length -
-                                                            1 -
-                                                            key
-                                                    ].message
-                                                }
-                                            </div>
-                                        </div>
-                                    );
+                                // else if (
+                                //     allMessages[allMessages.length - 1 - key]
+                                //         .type === MESSAGES_TYPES.TOTAL_USER
+                                // )
+                                //     return (
+                                //         <div
+                                //             className={`align-self-center mb-3`}
+                                //             key={key}
+                                //         >
+                                //             <div
+                                //                 style={{
+                                //                     position: "relative",
+                                //                 }}
+                                //             >
+                                //                 {
+                                //                     allMessages[
+                                //                         allMessages.length -
+                                //                             1 -
+                                //                             key
+                                //                     ].message
+                                //                 }
+                                //             </div>
+                                //         </div>
+                                //     );
                                 return <div>Something wrong</div>;
                             })}
                             {/*----------------- MESSAGE END ---------------------- */}
