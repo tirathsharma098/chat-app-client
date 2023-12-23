@@ -1,17 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import Style from "./MainChat.module.css";
 import { toast } from "react-toastify";
 import { toastOptions } from "../../utils/responseHandler";
 import axios from "axios";
 import { API } from "../../config/api/api.config";
-import { getApiHeader } from "../../config/headers/get-api-header";
 import { useDispatch } from "react-redux";
 import { chatActions } from "../../store/chat";
+import useHeaders from "../../hooks/useHeaders";
 
 export default function MainChat({ socket, chatState }) {
     const [currentMessage, setCurrentMessage] = useState("");
     const dispatch = useDispatch();
+    const messagesEndRef = useRef(null)
+    const headers = useHeaders();
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
+  
+    useEffect(() => {
+      scrollToBottom()
+    }, [chatState.messages]);
+  
     useEffect(() => {
         socket.emit("join_chat", chatState.currentChat);
         socket.on("chat_connected", (id_got) => {
@@ -30,7 +40,7 @@ export default function MainChat({ socket, chatState }) {
                 API.endpoint + `/chat/send-message/${chatState.currentChat}`,
                 { content: currentMessage },
                 {
-                    ...getApiHeader,
+                    ...headers,
                 }
             );
             const message = {
@@ -61,6 +71,7 @@ export default function MainChat({ socket, chatState }) {
                     <div className={Style["messages-absolute-container"]}>
                         <div className="d-flex flex-column-reverse">
                             {/*----------------- MESSAGE START ---------------------- */}
+                            <div ref={messagesEndRef} />
                             {chatState.messages.map((currentMessage, key) => {
                                 if (
                                     chatState.messages[
@@ -152,6 +163,7 @@ export default function MainChat({ socket, chatState }) {
                                 //     );
                                 return <div>Something wrong</div>;
                             })}
+                            
                             {/*----------------- MESSAGE END ---------------------- */}
                         </div>
                     </div>

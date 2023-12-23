@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import Style from "./ChatSidebar.module.css";
-import RingsLoading from "../../components/RingsLoading";
-import useGetApi from "../../hooks/useGetApi";
 import axios from "axios";
 import { API } from "../../config/api/api.config";
 import { getApiHeader } from "../../config/headers/get-api-header";
@@ -10,15 +8,16 @@ import { toastOptions } from "../../utils/responseHandler";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { chatActions } from "../../store/chat";
+import NewChat from "./NewChat";
+import useHeaders from "../../hooks/useHeaders";
 
 export default function ChatSidebar() {
     const [showChatList, setShowChatList] = useState(true);
     const [showChatFind, setShowChatFind] = useState(false);
     const [userChatSelected, setUserChatSelected] = useState(null);
     const dispatch = useDispatch();
-    const { response: foundChatList, isFetching: isChatFetching } = useGetApi(
-        "/user/get-all-dropdown"
-    );
+    const headers = useHeaders();
+    
     useEffect(() => {
         if (!userChatSelected) return;
         (async () => {
@@ -28,7 +27,7 @@ export default function ChatSidebar() {
                 const response = await axios({
                     url:
                         API.endpoint + `/chat/all-messages/${userChatSelected}`,
-                    ...getApiHeader,
+                    ...headers,
                 });
                 if (response.data?.success === true)
                     dispatch(
@@ -90,23 +89,7 @@ export default function ChatSidebar() {
                     </div>
                 </div>
                 <div>
-                    {showChatFind &&
-                        foundChatList &&
-                        foundChatList.map((currentUser) => (
-                            <div
-                                key={currentUser.id}
-                                className={Style["found-chat-list"]}
-                                onClick={() =>
-                                    setUserChatSelected(currentUser.id)
-                                }
-                            >
-                                <div>
-                                    {currentUser.full_name} (
-                                    {currentUser.username})
-                                </div>
-                            </div>
-                        ))}
-                    {showChatFind && isChatFetching && <RingsLoading />}
+                {showChatFind && <NewChat setUserChatSelected={setUserChatSelected}/>}
                 </div>
             </div>
             {/* chat side bar end */}

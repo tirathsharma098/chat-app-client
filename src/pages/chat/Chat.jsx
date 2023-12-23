@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 // import Style from "./Chat.module.css";
 import io from "socket.io-client";
 import { API } from "../../config/api/api.config";
-import { MESSAGES_TYPES } from "../../utils/constants";
 import ChatSidebar from "../../components/chat/ChatSidebar";
 import MainChat from "../../components/chat/MainChat";
 import { useSelector } from "react-redux";

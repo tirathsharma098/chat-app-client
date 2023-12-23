@@ -1,0 +1,15 @@
+
+.found-chat-list{
+    color: rgb(49, 49, 49);
+    padding: 0.7rem 0.4rem;
+    margin: 0px 1rem 0px 4rem;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    border-bottom: 1px solid rgba(233, 233, 233, 0.858);
+}
+
+.found-chat-list:hover{
+    background-color: #f6f6f6;
+    cursor: pointer;
+}
