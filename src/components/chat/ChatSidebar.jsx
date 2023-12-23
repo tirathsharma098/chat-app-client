@@ -3,7 +3,6 @@ import { InputText } from "primereact/inputtext";
 import Style from "./ChatSidebar.module.css";
 import axios from "axios";
 import { API } from "../../config/api/api.config";
-import { getApiHeader } from "../../config/headers/get-api-header";
 import { toastOptions } from "../../utils/responseHandler";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";

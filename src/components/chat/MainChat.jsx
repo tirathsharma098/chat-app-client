@@ -8,28 +8,35 @@ import { API } from "../../config/api/api.config";
 import { useDispatch } from "react-redux";
 import { chatActions } from "../../store/chat";
 import useHeaders from "../../hooks/useHeaders";
+import { socket } from "../../socket";
 
-export default function MainChat({ socket, chatState }) {
+export default function MainChat({ chatState }) {
     const [currentMessage, setCurrentMessage] = useState("");
     const dispatch = useDispatch();
-    const messagesEndRef = useRef(null)
+    const messagesEndRef = useRef(null);
     const headers = useHeaders();
     const scrollToBottom = () => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-    }
-  
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
     useEffect(() => {
-      scrollToBottom()
+        scrollToBottom();
     }, [chatState.messages]);
-  
+
     useEffect(() => {
+        function onPrivateMessageReceived(m) {
+            console.log("Message received new")
+            dispatch(chatActions.newMessage(m));
+        }
         socket.emit("join_chat", chatState.currentChat);
         socket.on("chat_connected", (id_got) => {
             console.log(">> Chat connected : ", id_got);
         });
-        socket.on("private_message_received", (m) => {
-            dispatch(chatActions.newMessage(m));
-        });
+        socket.on("private_message_received", onPrivateMessageReceived);
+        return () => {
+            socket.off("chat_connected");
+            socket.off("private_message_received", onPrivateMessageReceived);
+        };
     }, []);
 
     const currentMessageHandler = async (e) => {
@@ -163,7 +170,7 @@ export default function MainChat({ socket, chatState }) {
                                 //     );
                                 return <div>Something wrong</div>;
                             })}
-                            
+
                             {/*----------------- MESSAGE END ---------------------- */}
                         </div>
                     </div>
