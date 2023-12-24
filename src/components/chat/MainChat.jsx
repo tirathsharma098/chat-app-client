@@ -24,8 +24,9 @@ export default function MainChat({ chatState }) {
     }, [chatState.messages]);
 
     useEffect(() => {
-        function onPrivateMessageReceived(m) {
+        function onPrivateMessageReceived(m, chat_id) {
             console.log("Message received new")
+            if(chat_id === chatState.currentChat)
             dispatch(chatActions.newMessage(m));
         }
         socket.emit("join_chat", chatState.currentChat);
@@ -34,6 +35,7 @@ export default function MainChat({ chatState }) {
         });
         socket.on("private_message_received", onPrivateMessageReceived);
         return () => {
+            socket.emit("leave_chat", chatState.currentChat);
             socket.off("chat_connected");
             socket.off("private_message_received", onPrivateMessageReceived);
         };
