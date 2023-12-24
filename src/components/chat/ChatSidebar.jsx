@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { chatActions } from "../../store/chat";
 import NewChat from "./NewChat";
 import useHeaders from "../../hooks/useHeaders";
+import ChatList from "./ChatList";
 
 export default function ChatSidebar() {
     const [showChatList, setShowChatList] = useState(true);
@@ -89,6 +90,7 @@ export default function ChatSidebar() {
                 </div>
                 <div>
                 {showChatFind && <NewChat setUserChatSelected={setUserChatSelected}/>}
+                {showChatList && <ChatList setUserChatSelected={setUserChatSelected}/>}
                 </div>
             </div>
             {/* chat side bar end */}
