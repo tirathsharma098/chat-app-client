@@ -47,21 +47,22 @@ export default function MainChat({ chatState }) {
     await commonMessageHandler();
   };
   const onSendMessageHandler = async () => {
-    if (!currentMessage.trim()) return;
     await commonMessageHandler();
   };
   async function commonMessageHandler() {
+    const trimmedMessage = currentMessage.trim();
+    if (!trimmedMessage) return;
     try {
       const response = await axios.post(
         API.endpoint + `/chat/send-message/${chatState.currentChat}`,
-        { content: currentMessage },
+        { content: trimmedMessage },
         {
           ...headers,
         }
       );
       const message = {
         id: response.data.data.id,
-        content: currentMessage,
+        content: trimmedMessage,
         readbyMessage: [],
         messageSender: {
           id: localStorage.getItem("user_id"),
