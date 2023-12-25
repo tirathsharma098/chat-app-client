@@ -7,3 +7,9 @@
     background-color: white;
     cursor: pointer;
 }
+.sidebar-search-input{
+    height: 2.5rem;
+}
+.new-chat-icon-selected{
+    background-color: white;
+}
