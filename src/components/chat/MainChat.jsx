@@ -87,42 +87,27 @@ export default function MainChat({ chatState }) {
       <div className="h-100 d-flex flex-column">
         <div className="position-relative w-100 h-100">
           <div className={Style["messages-absolute-container"]}>
-            <div className="d-flex flex-column-reverse">
+            <div className="d-flex flex-column">
               {/*----------------- MESSAGE START ---------------------- */}
-              <div ref={messagesEndRef} />
               {chatState.messages.map((currentMessage, key) => {
-                if (
-                  chatState.messages[chatState.messages.length - 1 - key].messageSender.id ===
-                  localStorage.getItem("user_id")
-                )
+                if (currentMessage.messageSender.id === localStorage.getItem("user_id"))
                   return (
                     <div className="align-self-start mb-3" key={key}>
-                      <div
-                        style={{
-                          position: "relative",
-                          left: "20px",
-                        }}>
-                        <div className={`${Style["chat-box-me"]}`}>
-                          {chatState.messages[chatState.messages.length - 1 - key].content}
-                        </div>
+                      <div className={Style["chat-box-me-container"]}>
+                        <div className={Style["chat-box-me"]}>{currentMessage.content}</div>
                       </div>
                     </div>
                   );
-                else if (
-                  chatState.messages[chatState.messages.length - 1 - key].messageSender.id !==
-                  localStorage.getItem("user_id")
-                )
+                else if (currentMessage.messageSender.id !== localStorage.getItem("user_id"))
                   return (
                     <div className="align-self-end mb-3" key={key}>
-                      <div style={{ position: "relative", right: "20px" }}>
-                        <div className={`${Style["chat-box-receiver"]}`}>
-                          {chatState.messages[chatState.messages.length - 1 - key].content}
-                        </div>
+                      <div className={Style["chat-box-receiver-container"]}>
+                        <div className={Style["chat-box-receiver"]}>{currentMessage.content}</div>
                       </div>
                     </div>
                   );
                 // else if (
-                //     allMessages[allMessages.length - 1 - key]
+                //     currentMessage.messageSender
                 //         .type === MESSAGES_TYPES.TOTAL_USER
                 // )
                 //     return (
@@ -136,18 +121,14 @@ export default function MainChat({ chatState }) {
                 //                 }}
                 //             >
                 //                 {
-                //                     allMessages[
-                //                         allMessages.length -
-                //                             1 -
-                //                             key
-                //                     ].message
+                //                     currentMessage.message
                 //                 }
                 //             </div>
                 //         </div>
                 //     );
                 return <div>Something wrong</div>;
               })}
-
+              <div ref={messagesEndRef} />
               {/*----------------- MESSAGE END ---------------------- */}
             </div>
           </div>

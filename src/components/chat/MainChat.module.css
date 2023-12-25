@@ -27,12 +27,24 @@ min-height: 100%;
 .send-message-icon:hover{
     cursor: pointer;
 }
+.chat-box-me-container,.chat-box-receiver-container{
+    position: relative;
+    /* max-width: 85%; */
+}
+.chat-box-me-container{
+left: 30px;
+}
+.chat-box-receiver-container{
+right: 30px;
+}
 .chat-box-me,
 .chat-box-receiver {
     padding: 4px 16px;
-    /* border: solid black 1px; */
-    max-width: 95%;
-    background-color: #d3ffdc;
+    /* word-wrap: break-word; */
+    max-width: 800px;
+    width: max-content;
+    word-break: break-all;
+    background-color: #c1f8cc;
 }
 .chat-box-me {
     border-radius: 0 8px 8px 8px;
@@ -48,7 +60,7 @@ min-height: 100%;
     margin-left: -6px;
     border-width: 6px;
     border-style: solid;
-    border-color: #d3ffdc transparent transparent transparent;
+    border-color: #c1f8cc transparent transparent transparent;
 }
 .chat-box-receiver::after {
     content: "";
@@ -58,7 +70,7 @@ min-height: 100%;
     margin-right: -6px;
     border-width: 6px;
     border-style: solid;
-    border-color: #d3ffdc transparent transparent transparent;
+    border-color: #c1f8cc transparent transparent transparent;
 }
 
 /* .messages-relative-container {
@@ -81,4 +93,44 @@ min-height: 100%;
     align-self: center;
     font-size: 1.2rem;
     font-weight: 400;
+}
+
+/* Extra small devices (phones, 600px and down) */
+@media only screen and (max-width: 600px) {
+    .chat-box-me,
+    .chat-box-receiver {
+        max-width: 200px;
+    }
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+    .chat-box-me,
+    .chat-box-receiver {
+        max-width: 300px;
+    }
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+    .chat-box-me,
+    .chat-box-receiver {
+        max-width: 450px;
+    }
+}
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+    .chat-box-me,
+.chat-box-receiver {
+    max-width: 610px;
+}
+}
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1300px) {
+    .chat-box-me,
+    .chat-box-receiver {
+        max-width: 800px;
+    }
 }
