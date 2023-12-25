@@ -20,6 +20,8 @@ export default function ChatSidebar() {
 
   useEffect(() => {
     if (!userChatSelected) return;
+    setShowChatFind(() => false);
+    setShowChatList(() => true);
     (async () => {
       try {
         dispatch(chatActions.set({ chatLoading: true }));

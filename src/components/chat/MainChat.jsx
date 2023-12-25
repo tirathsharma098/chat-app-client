@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { InputText } from "primereact/inputtext";
 import { InputTextarea } from "primereact/inputtextarea";
 import Style from "./MainChat.module.css";
 import { toast } from "react-toastify";
