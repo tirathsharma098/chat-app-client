@@ -1,0 +1,14 @@
+.chat-list-last-message{
+    font-weight: 200;
+    font-family: 'Lora';
+    font-style: italic;
+    white-space: nowrap;
+    overflow: hidden !important;
+    width: 100%;
+    text-overflow: ellipsis;
+    /* background-color: rgba(236, 236, 236, 0.249); */
+}
+.chat-list-full-name{
+    font-weight: 600;
+    font-family: 'Noto Sans';
+}

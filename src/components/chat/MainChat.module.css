@@ -15,13 +15,23 @@ min-height: 100%;
 } */
 .chat-container .message-container {
     position: sticky;
-    bottom: 1%;
+    bottom: 0%;
+    display: flex;
 }
-
+.send-message-icon{
+    padding: 0.7rem;
+    background-color: white;
+    border-radius: 100%;
+    align-self: center;
+}
+.send-message-icon:hover{
+    cursor: pointer;
+}
 .chat-box-me,
 .chat-box-receiver {
     padding: 4px 16px;
     /* border: solid black 1px; */
+    max-width: 95%;
     background-color: #d3ffdc;
 }
 .chat-box-me {
@@ -62,4 +72,13 @@ min-height: 100%;
     top: 0;
     bottom: 0;
     overflow: auto;
+}
+
+.chat-bar{
+    display: flex;
+}
+.chat-bar>div{
+    align-self: center;
+    font-size: 1.2rem;
+    font-weight: 400;
 }
